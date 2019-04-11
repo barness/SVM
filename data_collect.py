@@ -1,5 +1,6 @@
 import sys
-import quandl, pandas as pd
+import quandl
+import pandas as pd
 import xlrd
 import data_utils as utils
 

@@ -2,7 +2,15 @@ import pandas as pd
 import sliding_window as sw
 
 width = 5
-window_separation = 14
+window_separation = 10
+threshold = .1
+
+
+def get_magnitude(leading, trailing):
+    pass
+    #sam will write this
+
+
 
 
 def get_data(filename, sheetname):
@@ -16,8 +24,20 @@ def get_data(filename, sheetname):
         window_trailing = sw.MovingAverage(width)
         window_leading = sw.MovingAverage(width)
 
-        for price in prices:
-            price
+        counter = 0
+        for price, date in zip(prices, dates):
+            window_leading.__add__(prices[counter+10])
+            window_trailing.__add__(price) #|| prices[counter]
+
+            ma_leading = window_leading.__get_ma__()
+            ma_trailing = window_trailing.__get_ma__()
+
+            if get_magnitude(ma_leading, ma_trailing) > threshold:
+                #record_features() - sam will write this also
+
+            counter += 1
+
+
 
 
     return ticker_list
