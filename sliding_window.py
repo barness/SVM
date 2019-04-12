@@ -1,3 +1,5 @@
+import numpy
+
 class MovingAverage(object):
 
     def __init__(self, width, init_value=0):
