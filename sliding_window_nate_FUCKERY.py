@@ -8,7 +8,7 @@ class Spike(object):
         self.sign = sign
         self.magnitude = magnitude
         self.birthday = birthday
-        self.confirmed = None
+        self.confirmed = False
 
     def __is_positive__(self):
         return self.sign == True
@@ -19,6 +19,7 @@ class Spike(object):
 width = 5
 window_separation = 10
 threshold = .15
+
 
 
 
@@ -108,5 +109,21 @@ def get_data(filename, sheetname):
             print(spike.birthday)
     return spike_list
 
+def get_key(spike):
+    return spike.confirmed
+
+def parse_output(list_of_spikes):
+    with open("svm_input.dat", 'w') as outfile:
+        list_of_spikes.sort(key=get_key)
+        for i in list_of_spikes:
+            if i.confirmed:
+                outfile.write("1 ")
+                outfile.write(str(i.birthday))
+            else:
+                outfile.write("-1 ")
+                outfile.write(str(i.birthday))
+            outfile.write("\n")
+
 if __name__ == '__main__':
-    get_data("data/it.xlsx", "Sheet1")
+    huge_list_of_spikes = get_data("data/it.xlsx", "Sheet1")
+    parse_output(huge_list_of_spikes)
