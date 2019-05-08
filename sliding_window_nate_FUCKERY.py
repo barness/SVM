@@ -114,7 +114,7 @@ def get_key(spike):
 
 def parse_output(list_of_spikes):
     with open("svm_input.dat", 'w') as outfile:
-        list_of_spikes.sort(key=get_key)
+        list_of_spikes.sort(key=get_key, reverse=True)
         for i in list_of_spikes:
             if i.confirmed:
                 outfile.write("1 ")
