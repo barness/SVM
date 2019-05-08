@@ -8,6 +8,7 @@ class Spike(object):
         self.sign = sign
         self.magnitude = magnitude
         self.birthday = birthday
+        self.confirmed = None
 
     def __is_positive__(self):
         return self.sign == True
@@ -17,7 +18,7 @@ class Spike(object):
 
 width = 5
 window_separation = 10
-threshold = .1
+threshold = .15
 
 
 
@@ -43,7 +44,7 @@ def get_data(filename, sheetname):
     prices = df[ticker]
     window_trailing = sw.MovingAverage(width)
     window_leading = sw.MovingAverage(width)
-    potential_spikes, confirmed_spikes = [], []
+    potential_spikes, spike_list = [], []
 
     counter = 0
     for price, date in zip(prices, dates):
@@ -51,7 +52,7 @@ def get_data(filename, sheetname):
 
         # print(price)
 
-        window_leading.__add__(prices[counter+10])
+        window_leading.__add__(prices[counter+window_separation])
         window_trailing.__add__(prices[counter])
 
         # print("leading shit")
@@ -67,6 +68,8 @@ def get_data(filename, sheetname):
 
 
         if current_spike:
+            spike_list.append(current_spike)
+
             # print("we found one")
             current_sign = current_spike.__is_positive__()
             potential_spikes.append(current_spike)
@@ -74,12 +77,13 @@ def get_data(filename, sheetname):
             remove_spike = False
 
             for spike in potential_spikes:
-                if counter - spike.birthday > 10:
+                if counter - spike.birthday > 30:
                     print("a spike expired")
                     potential_spikes.remove(spike)
 
                 elif current_sign != spike.__is_positive__():
-                    confirmed_spikes.append((spike, current_spike))
+                    spike.confirmed = True
+                    # confirmed_spikes.append((spike, current_spike))
                     potential_spikes.remove(spike)
                     remove_spike = True
 
@@ -99,9 +103,10 @@ def get_data(filename, sheetname):
 
     #test return statement dont keep it here
     # print("potential_spikes", len(potential_spikes))
-    for pair in confirmed_spikes:
-        print(pair[0].birthday, pair[1].birthday)
-    return confirmed_spikes
+    for spike in spike_list:
+        if spike.confirmed:
+            print(spike.birthday)
+    return spike_list
 
 if __name__ == '__main__':
     get_data("data/it.xlsx", "Sheet1")
