@@ -52,7 +52,7 @@ def get_data(filename, sheetname):
         # print(price)
 
         window_leading.__add__(prices[counter+10])
-        window_trailing.__add__(price) #|| prices[counter]
+        window_trailing.__add__(prices[counter])
 
         # print("leading shit")
         # print(window_leading.__get__())
@@ -66,25 +66,35 @@ def get_data(filename, sheetname):
         current_spike = detect_spike(ma_leading, ma_trailing, counter)
 
 
-
-
         if current_spike:
             # print("we found one")
             current_sign = current_spike.__is_positive__()
             potential_spikes.append(current_spike)
+
+            remove_spike = False
+
             for spike in potential_spikes:
-                # print("birthday", spike.birthday)
-                if current_sign != spike.__is_positive__():
+                if counter - spike.birthday > 10:
+                    print("a spike expired")
+                    potential_spikes.remove(spike)
+
+                elif current_sign != spike.__is_positive__():
                     confirmed_spikes.append((spike, current_spike))
                     potential_spikes.remove(spike)
-                elif counter - spike.birthday > 10:
-                    potential_spikes.remove(spike)
-                
+                    remove_spike = True
 
+
+
+                print("birthday", spike.birthday)
+                print("counter", counter)
+                print("xxx")
+
+            if remove_spike:
+                potential_spikes.remove(current_spike)
 
         counter += 1
 
-        if counter > 199:
+        if counter > 14000:
             break
 
     #test return statement dont keep it here
@@ -95,4 +105,3 @@ def get_data(filename, sheetname):
 
 if __name__ == '__main__':
     get_data("data/it.xlsx", "Sheet1")
-
