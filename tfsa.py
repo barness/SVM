@@ -18,7 +18,7 @@ class Spike(object):
 
 width = 5
 window_separation = 10
-threshold = .15
+threshold = .1
 
 
 
