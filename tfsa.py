@@ -4,10 +4,11 @@ import sliding_window as sw
 
 class Spike(object):
 
-    def __init__(self, sign, magnitude, birthday):
+    def __init__(self, sign, trailing, magnitude, birthday):
         self.sign = sign
         self.magnitude = magnitude
         self.birthday = birthday
+        self.trailing = trailing
         self.confirmed = False
 
     def __is_positive__(self):
@@ -29,9 +30,9 @@ def detect_spike(leading, trailing, counter):
     percent_change = (leading - trailing)/trailing
     # print(percent_change)
     if percent_change <= -threshold:
-        return Spike(False, percent_change, counter)
+        return Spike(False,trailing, percent_change, counter)
     elif percent_change >= threshold:
-        return Spike(True, percent_change, counter)
+        return Spike(True, trailing, percent_change, counter)
     else:
         return None
 
@@ -79,7 +80,7 @@ def get_data(filename, sheetname):
 
             for spike in potential_spikes:
                 if counter - spike.birthday > 30:
-                    print("a spike expired")
+                    #print("a spike expired")
                     potential_spikes.remove(spike)
 
                 elif current_sign != spike.__is_positive__():
@@ -90,9 +91,9 @@ def get_data(filename, sheetname):
 
 
 
-                print("birthday", spike.birthday)
-                print("counter", counter)
-                print("xxx")
+##                print("birthday", spike.birthday)
+##                print("counter", counter)
+##                print("xxx")
 
             if remove_spike:
                 potential_spikes.remove(current_spike)
@@ -118,10 +119,10 @@ def parse_output(list_of_spikes):
         for i in list_of_spikes:
             if i.confirmed:
                 outfile.write("1 ")
-                outfile.write(str(i.birthday))
+                outfile.write(str(i.birthday)+' '+str(i.magnitude)+' '+str(i.trailing))
             else:
                 outfile.write("-1 ")
-                outfile.write(str(i.birthday))
+                outfile.write(str(i.birthday)+' ' + str(i.magnitude)+' '+ str(i.trailing))
             outfile.write("\n")
 
 if __name__ == '__main__':
