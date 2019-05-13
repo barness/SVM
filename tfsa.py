@@ -39,21 +39,22 @@ def get_data(filename, sheetname):
 
     dates = df["date"]
     ticker_list = [ticker for ticker in df.columns[1:]]
-
     ticker = ticker_list[3]
     prices = df[ticker]
+
+    # index into row 10,000
+    prices = prices.loc[10000:]
 
     window_trailing = sw.MovingAverage(width)
     window_leading = sw.MovingAverage(width)
     potential_spikes, spike_list = [], []
 
-    counter = 0
+    counter = 10000
     for price, date in zip(prices, dates):
-        # print(counter)
-
-        # print(price)
-
-        window_leading.__add__(prices[counter+window_separation])
+        try:
+            window_leading.__add__(prices[counter+window_separation])
+        except Exception as e:
+            break
         window_trailing.__add__(prices[counter])
 
         # print("leading shit")
