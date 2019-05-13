@@ -80,4 +80,4 @@ def asset_data_collect(companies = None, begin_date = None, end_date = None, col
 
 
 def get_sector_dates():
-    return '1900-1-02', '2018-12-31'
+    return '1900-1-02', '2019-4-20'

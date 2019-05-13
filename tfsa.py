@@ -1,5 +1,6 @@
 import pandas as pd
 import sliding_window as sw
+import sys
 
 
 class Spike(object):
@@ -22,9 +23,6 @@ window_separation = 10
 threshold = .1
 
 
-
-
-
 def detect_spike(leading, trailing, counter):
 
     percent_change = (leading - trailing)/trailing
@@ -44,6 +42,7 @@ def get_data(filename, sheetname):
 
     ticker = ticker_list[3]
     prices = df[ticker]
+
     window_trailing = sw.MovingAverage(width)
     window_leading = sw.MovingAverage(width)
     potential_spikes, spike_list = [], []
@@ -89,19 +88,13 @@ def get_data(filename, sheetname):
                     potential_spikes.remove(spike)
                     remove_spike = True
 
-
-
-##                print("birthday", spike.birthday)
-##                print("counter", counter)
-##                print("xxx")
-
             if remove_spike:
                 potential_spikes.remove(current_spike)
 
         counter += 1
 
-        if counter > 14000:
-            break
+        # if counter > 10000:
+        #     break
 
     #test return statement dont keep it here
     # print("potential_spikes", len(potential_spikes))
@@ -113,16 +106,17 @@ def get_data(filename, sheetname):
 def get_key(spike):
     return spike.confirmed
 
+
 def parse_output(list_of_spikes):
     with open("svm_input.dat", 'w') as outfile:
         list_of_spikes.sort(key=get_key, reverse=True)
         for i in list_of_spikes:
             if i.confirmed:
                 outfile.write("1 ")
-                outfile.write(str(i.birthday)+' '+str(i.magnitude)+' '+str(i.trailing))
+                outfile.write("1:" + str(i.birthday) + ' 2:'+str(i.magnitude)+' 3:'+str(i.trailing))
             else:
                 outfile.write("-1 ")
-                outfile.write(str(i.birthday)+' ' + str(i.magnitude)+' '+ str(i.trailing))
+                outfile.write("1:"+str(i.birthday)+' 2:' + str(i.magnitude)+' 3:'+ str(i.trailing))
             outfile.write("\n")
 
 if __name__ == '__main__':
