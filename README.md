@@ -1,2 +1,2 @@
 # SVM
-Featurs: Spike Magnitude, Date Spike Confirmed
+Features: Spike Magnitude, Date Spike Confirmed
